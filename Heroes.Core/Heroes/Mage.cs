@@ -1,3 +1,4 @@
+using System.Numerics;
 using Heroes.Core.Interfaces;
 
 
@@ -5,13 +6,11 @@ namespace Heroes.Core.Heroes;
 
 public class Mage : HeroBase, IAttacker
 {
-    public override void Attack(HeroBase enemy)
+    public override void Attack(IDamageable target)
     {
-        MagicAttack(enemy);
-    }
-
-    public void MagicAttack(HeroBase enemy)
-    {
-        throw new System.NotImplementedException();
+        if (IsAlive && target != null && target.IsAlive)
+        {
+            target.TakeDamage(Damage);
+        }
     }
 }

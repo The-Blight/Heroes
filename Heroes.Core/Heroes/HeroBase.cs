@@ -10,6 +10,12 @@ public abstract class HeroBase : IDamageable, IAttacker
         protected set => field = value < 0 ? 0 : value;
     }
 
+    public int Damage
+    {
+        get;
+        init => field = value < 0 ? 0 : value;
+    }
+
     public bool IsAlive => Health > 0;
     public bool IsDead => !IsAlive;
 
@@ -17,9 +23,9 @@ public abstract class HeroBase : IDamageable, IAttacker
     {
         if (amount > 0)
         {
-            Health -= amount; 
+            Health -= amount;
         }
     }
 
-    public abstract void Attack(IDamageable target); 
+    public abstract void Attack(IDamageable target);
 }
