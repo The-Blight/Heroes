@@ -17,7 +17,7 @@ public abstract class HeroBase : IDamageable, IAttacker
     public int Health
     {
         get;
-        protected set => field = value < 0 ? 0 : value;
+         set => field = value < 0 ? 0 : value;
     }
 
     /// <summary>
