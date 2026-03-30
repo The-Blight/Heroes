@@ -1,4 +1,4 @@
-namespace Heroes.Core;
+namespace Heroes.Core.Heroes;
 
 public abstract class HeroBase
 {

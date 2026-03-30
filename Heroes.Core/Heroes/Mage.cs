@@ -1,6 +1,9 @@
-namespace Heroes.Core;
+using Heroes.Core.Interfaces;
 
-public class Mage : HeroBase, IMage
+
+namespace Heroes.Core.Heroes;
+
+public class Mage : HeroBase, IAttacker
 {
     public override void Attack(HeroBase enemy)
     {

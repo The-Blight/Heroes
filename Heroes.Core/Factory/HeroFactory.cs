@@ -1,11 +1,12 @@
 using System;
+using Heroes.Core.Heroes;
 
 namespace Heroes.Core;
 
 public enum HeroType
 {
     Warrior, Mage
-}
+    }
 
 public static class HeroFactory
 {

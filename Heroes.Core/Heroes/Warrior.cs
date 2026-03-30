@@ -1,6 +1,9 @@
-namespace Heroes.Core;
+using Heroes.Core.Interfaces;
 
-public class Warrior : HeroBase, IWarrior
+
+namespace Heroes.Core.Heroes;
+
+public class Warrior : HeroBase, IAttacker
 {
     public override void Attack(HeroBase enemy)
     {
