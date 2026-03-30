@@ -1,21 +1,25 @@
+using Heroes.Core.Interfaces;
+
 namespace Heroes.Core.Heroes;
 
-public abstract class HeroBase
+public abstract class HeroBase : IDamageable, IAttacker
 {
     public int Health
     {
         get;
-        set => field = value < 0 ? 0 : value; //TODO: вынести в метод валидации
+        protected set => field = value < 0 ? 0 : value;
     }
 
-    public int Damage
+    public bool IsAlive => Health > 0;
+    public bool IsDead => !IsAlive;
+
+    public void TakeDamage(int amount)
     {
-        get;
-        init => field = value < 0 ? 0 : value; //TODO: вынести в метод валидации
+        if (amount > 0)
+        {
+            Health -= amount; 
+        }
     }
-    
-    public bool IsAlive => this.Health > 0 ;
-    public bool IsDead => !this.IsAlive;
 
-    public abstract void Attack(HeroBase enemy);
+    public abstract void Attack(IDamageable target); 
 }
