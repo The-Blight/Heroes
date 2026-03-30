@@ -1,27 +1,27 @@
 using System;
+using System.Collections.Generic;
 using Heroes.Core.Heroes;
 
 namespace Heroes.Core.Factory;
 
-
-
-public static class HeroFactory
+public class HeroFactory
 {
-    public static HeroBase CreateHero(HeroType type, int health, int damage)
+    private readonly Dictionary<Type, Func<int, int, HeroBase>> _creators = [];
+
+    public void RegisterType<T>(Func<int, int, T> creator) where T : HeroBase
     {
-        return type switch
+        _creators[typeof(T)] = creator;
+    }
+
+    public T Create<T>(int health, int damage) where T : HeroBase
+    {
+        Type requestedType = typeof(T);
+
+        if (_creators.TryGetValue(requestedType, out var creatorFunc))
         {
-           HeroType.Mage => new Mage()
-           {
-               Health = health,
-               Damage = damage
-           },
-           HeroType.Warrior => new Warrior()
-           {
-               Health = health,
-               Damage = damage
-           },
-           _ => throw new ArgumentOutOfRangeException(nameof(type), type, null) //TODO: Прудумать свой тип исключения
-        };
+            return (T)creatorFunc(health, damage);
+        }
+
+        throw new InvalidOperationException($"Тип героя {requestedType.Name} не зарегистрирован в фабрике.");
     }
 }
