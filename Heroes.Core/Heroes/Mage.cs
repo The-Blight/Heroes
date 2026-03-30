@@ -1,4 +1,3 @@
-using System.Numerics;
 using Heroes.Core.Interfaces;
 
 
@@ -8,7 +7,7 @@ public class Mage : HeroBase, IAttacker
 {
     public override void Attack(IDamageable target)
     {
-        if (IsAlive && target != null && target.IsAlive)
+        if (IsAlive && target is not null && target.IsAlive)
         {
             target.TakeDamage(Damage);
         }

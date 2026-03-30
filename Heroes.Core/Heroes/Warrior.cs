@@ -3,15 +3,14 @@ using Heroes.Core.Interfaces;
 
 namespace Heroes.Core.Heroes;
 
-public class Warrior : HeroBase, IAttacker
+public class Warrior : HeroBase
 {
-    public override void Attack(HeroBase enemy)
+    public override void Attack(IDamageable target)
     {
-        PhysicalAttack(enemy);
-    }
-
-    public void PhysicalAttack(HeroBase enemy)
-    {
-        throw new System.NotImplementedException();
+        if (IsAlive && target is not null && target.IsAlive)
+        {
+            target.TakeDamage(Damage);
+        }
     }
 }
+
