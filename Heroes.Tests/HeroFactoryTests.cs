@@ -1,4 +1,5 @@
-﻿using Heroes.Core.Factory;
+﻿using System;
+using Heroes.Core.Factory;
 using Heroes.Core.Heroes;
 using Heroes.Core.Interfaces;
 
