@@ -6,35 +6,45 @@ using Heroes.Core.Interfaces;
 namespace Heroes.Core.Combat;
 
 /// <summary>
-/// Управляет пошаговой битвой между командой игрока и врагами.
+/// Управляет пошаговой битвой между командой игрока и командой врагов.
+/// Контролирует очередность ходов и логирует все события.
 /// </summary>
-public class BattleManager
+/// <param name="players">Список героев под управлением игрока.</param>
+/// <param name="enemies">Список вражеских героев.</param>
+/// <param name="logger">Интерфейс для вывода текстовой информации о ходе боя.</param>
+public class BattleManager(List<HeroBase> players, List<HeroBase> enemies, ICombatLogger logger)
 {
-    private List<HeroBase> _players;
-    private List<HeroBase> _enemies;
-    private ICombatLogger _logger;
+    /// <summary>
+    /// Возвращает <see langword="true"/>, если бой окончен. 
+    /// Бой считается завершенным, когда все герои игрока или все враги мертвы.
+    /// </summary>
+    public bool IsBattleOver => players.TrueForAll(p => p.IsDead) || enemies.TrueForAll(e => e.IsDead);
 
-    /// <summary>Бой окончен, если все игроки или все враги мертвы.</summary>
-    public bool IsBattleOver => _players.TrueForAll(p => p.IsDead) || _enemies.TrueForAll(e => e.IsDead);
-
-    private void ExecutePlayerTun(HeroBase attacker, HeroBase target)
+    /// <summary>
+    /// Выполняет ход игрока: выбранный атакующий наносит удар по выбранной цели.
+    /// Если после удара бой не окончен, автоматически вызывается ответный ход противника.
+    /// </summary>
+    /// <param name="attacker">Герой игрока, совершающий атаку.</param>
+    /// <param name="target">Вражеский герой, который получает урон.</param>
+    public void ExecutePlayerTurn(HeroBase attacker, HeroBase target)
     {
         if (attacker.IsDead)
         {
-            _logger.Log("Мёртвые не могут атаковать!");
+            logger.Log("Мёртвые не могут атаковать!");
+            return;
         }
 
         if (target.IsDead)
         {
-            _logger.Log("Эта цель уже мертва!");
+            logger.Log("Эта цель уже мертва!");
+            return;
         }
 
         int healthBefore = target.Health;
         attacker.Attack(target);
         int damageDealt = healthBefore - target.Health;
 
-        _logger.Log(
-            $"[{attacker.GetType().Name}] ударил [{target.GetType().Name}] на {damageDealt} урона. (У врага осталось {target.Health} HP)");
+        logger.Log($"[{attacker.GetType().Name}] ударил [{target.GetType().Name}] на {damageDealt} урона. (У врага осталось {target.Health} HP)");
 
         if (!IsBattleOver)
         {
@@ -43,15 +53,16 @@ public class BattleManager
     }
 
     /// <summary>
-    /// Автоматический ход всех живых врагов по первому живому игроку.
+    /// Выполняет автоматический ход всех живых врагов. 
+    /// Каждый враг находит первую попавшуюся живую цель среди игроков и атакует её.
     /// </summary>
     private void ExecuteEnemyTurn()
     {
-        _logger.Log("--- Ход противника ---");
+        logger.Log("--- Ход противника ---");
 
-        foreach (var enemy in _enemies.Where(e => e.IsAlive))
+        foreach (var enemy in enemies.Where(e => e.IsAlive))
         {
-            var target = _players.FirstOrDefault(p => p.IsAlive);
+            var target = players.FirstOrDefault(p => p.IsAlive);
 
             if (target is not null)
             {
@@ -59,11 +70,10 @@ public class BattleManager
                 enemy.Attack(target);
                 int damageDealt = healthBefore - target.Health;
 
-                _logger.Log(
-                    $"Вражеский [{enemy.GetType().Name}] атаковал [{target.GetType().Name}] на {damageDealt} урона. (Осталось {target.Health} HP)");
+                logger.Log($"Вражеский [{enemy.GetType().Name}] атаковал [{target.GetType().Name}] на {damageDealt} урона. (Осталось {target.Health} HP)");
             }
         }
-
-        _logger.Log("----------------------");
+        
+        logger.Log("----------------------");
     }
 }
