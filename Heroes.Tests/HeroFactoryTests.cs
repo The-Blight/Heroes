@@ -12,7 +12,7 @@ public class HeroFactoryTests
         var factory = new HeroFactory();
         factory.RegisterType<Mage>((h, d) =>
         {
-            var mage1 = new Mage { Damage = d };
+            var mage1 = new Mage { BaseDamage = d };
             mage1.Health = h;
             return mage1;
         });
@@ -24,7 +24,7 @@ public class HeroFactoryTests
         Assert.Multiple(
             () => Assert.NotNull(mage),
             () => Assert.Equal(80, mage.Health),
-            () => Assert.Equal(25, mage.Damage)
+            () => Assert.Equal(25, mage.BaseDamage)
         );
     }
 
@@ -52,7 +52,7 @@ public class HeroCombatTests
     [Fact]
     public void TakeDamage_ValidAmount_ReducesHealth()
     {
-        var mage = new Mage { Health = 100, Damage = 10 };
+        var mage = new Mage { Health = 100, BaseDamage = 10 };
 
 
         mage.TakeDamage(30);
@@ -65,7 +65,7 @@ public class HeroCombatTests
     [Fact]
     public void TakeDamage_FatalDamage_HealthDoesNotDropBelowZero()
     {
-        var warrior = new Warrior { Health = 50, Damage = 15 };
+        var warrior = new Warrior { Health = 50, BaseDamage = 15 };
 
 
         warrior.TakeDamage(100);
@@ -80,7 +80,7 @@ public class HeroCombatTests
     [Fact]
     public void Attack_ValidTarget_ReducesTargetHealth()
     {
-        var warrior = new Warrior { Health = 100, Damage = 25 };
+        var warrior = new Warrior { Health = 100, BaseDamage = 25 };
         var target = new StubTarget();
 
 
@@ -93,7 +93,7 @@ public class HeroCombatTests
     [Fact]
     public void Attack_DeadAttacker_DoesNotReduceTargetHealth()
     {
-        var deadMage = new Mage { Health = 0, Damage = 50 };
+        var deadMage = new Mage { Health = 0, BaseDamage = 50 };
         var target = new StubTarget();
 
 

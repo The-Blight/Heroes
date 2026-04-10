@@ -18,7 +18,7 @@ public class Mage : HeroBase, IAttacker
     {
         if (IsAlive && target is not null && target.IsAlive)
         {
-            target.TakeDamage(Damage);
+            target.TakeDamage(TotalDamage);
         }
     }
 }
