@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Heroes.Core.Interfaces;
 
 namespace Heroes.Core.Heroes;
@@ -7,6 +8,10 @@ namespace Heroes.Core.Heroes;
 /// и базовой логикой получения урона.
 /// </summary>
 
+
+
+[JsonDerivedType(typeof(Mage), typeDiscriminator: "Mage")]
+[JsonDerivedType(typeof(Warrior), typeDiscriminator: "Warrior")]
 public abstract class HeroBase : IDamageable, IAttacker
 {
     
@@ -30,9 +35,11 @@ public abstract class HeroBase : IDamageable, IAttacker
     }
 
     /// <inheritdoc/>>
+    [JsonIgnore]
     public bool IsAlive => Health > 0;
 
     /// <summary>Показывает, мертв ли герой.</summary>
+    [JsonIgnore]
     public bool IsDead => !IsAlive;
 
     
